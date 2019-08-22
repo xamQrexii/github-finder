@@ -15,6 +15,7 @@ const App = () => {
   const [user, setUser] = useState({});
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [userLoaded, setUserLoaded] = useState(false);
   const [alert, setAlert] = useState(null);
 
   // async componentDidMount() {
@@ -27,7 +28,7 @@ const App = () => {
   //   this.setState({ loading: false, users: res.data });
 
   // }
-
+ 
 
   //  Search GitHub Users
   const searchUsers = async (text) => {
@@ -39,27 +40,27 @@ const App = () => {
       process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
     );
 
-    await setUsers(res.data.items);
+    setUsers(res.data.items);
     setLoading(false);
   }
 
   // Get single GitHub user
-  const getUser = async (username) => {
-    await setLoading(true);
+  const getUser = async username => {
+    await setUserLoaded(false);
 
     const res = await axios.get(
       `https://api.github.com/users/${username}?client_id=${
-      process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${
-      process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+        process.env.REACT_APP_GITHUB_CLIENT_ID
+      }&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
     );
 
     await setUser(res.data);
-    setLoading(false);
-  }
+    setUserLoaded(true);
+  };
 
   // Get user repos
   const getUserRepos = async (username) => {
-    setLoading(true);
+    setUserLoaded(false);
 
     const res = await axios.get(
       `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${
@@ -67,14 +68,20 @@ const App = () => {
       process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
     );
     
-    setRepos(res.data);    
-    setLoading(false);
+    await setRepos(res.data);    
+    // setUserLoaded(true);
   }
 
   // Clear users from state
   const clearUsers = () => {
-    setLoading(false);
     setUsers([]);
+    setUserLoaded(false);  
+  }
+
+  // Clear user from state
+  const clearUser = () => {
+    setUser({});
+    setUserLoaded(false);
   }
 
   // Show Alert
@@ -107,9 +114,10 @@ const App = () => {
                   {...props}
                   getUser={getUser}
                   getUserRepos={getUserRepos}
+                  clearUser={clearUser}
                   repos={repos}
                   user={user}
-                  loading={loading}
+                  userLoaded={userLoaded}
                 />
               )}
               />

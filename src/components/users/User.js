@@ -4,14 +4,17 @@ import Spinner from '../layout/Spinner';
 import Repos from '../repos/Repos';
 import { Link } from 'react-router-dom';
 
-const User = ({ user, getUser, loading, repos, getUserRepos, match }) => {
-
+const User = ({ user, repos, userLoaded, getUser, getUserRepos, clearUser, match }) => {
+  
     useEffect(() => {
-        getUser(match.params.login);
-        getUserRepos(match.params.login);
-        // eslint-disable-next-line 
-    }, [])
-
+            getUser(match.params.login);
+            getUserRepos(match.params.login);
+            return () => {
+                return clearUser();
+            }
+        // eslint-disable-next-line
+    }, []);
+    
     const {
         name,
         avatar_url,
@@ -26,9 +29,9 @@ const User = ({ user, getUser, loading, repos, getUserRepos, match }) => {
         public_repos,
         public_gists,
         hireable
-    } = user;
+    } = user;    
 
-    if (loading) return <Spinner />
+    if (!userLoaded) return <Spinner />
 
     return (
         <Fragment>
@@ -97,10 +100,11 @@ const User = ({ user, getUser, loading, repos, getUserRepos, match }) => {
 
 User.propTypes = {
     user: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
+    userLoaded: PropTypes.bool.isRequired,
     getUser: PropTypes.func.isRequired,
     getUserRepos: PropTypes.func.isRequired,
+    clearUser: PropTypes.func.isRequired,
     repos: PropTypes.array.isRequired
 }
 
-export default User;
+export default React.memo(User);
