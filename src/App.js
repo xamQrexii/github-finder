@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './components/pages/Home';
 import About from './components/pages/About';
+import NotFound from './components/pages/NotFound';
 import NavBar from './components/layout/NavBar';
 import User from './components/users/User';
 import Alert from './components/layout/Alert';
@@ -30,6 +31,7 @@ const App = () => {
                   />
                 )}
                 />
+                <Route component={NotFound} />
               </Switch>
             </div>
           </div>
