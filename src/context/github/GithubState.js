@@ -15,11 +15,13 @@ import {
 let githubCliendId;
 let githubClientSecret;
 
-if(process.env.NODE_ENV !== 'production') {
-    githubCliendId = process.env.REACT_APP_GITHUB_CLIENT_ID;
+const { NODE_ENV, REACT_APP_GITHUB_CLIENT_ID, GITHUB_CLIENT_ID, } = process.env
+
+if (NODE_ENV !== 'production') {
+    githubCliendId = REACT_APP_GITHUB_CLIENT_ID;
     githubClientSecret = process.REACT_APP_GITHUB_CLIENT_SECRET;
 } else {
-    githubCliendId = process.env.GITHUB_CLIENT_ID;
+    githubCliendId = GITHUB_CLIENT_ID;
     githubClientSecret = process.GITHUB_CLIENT_SECRET;
 }
 
@@ -38,7 +40,7 @@ const GithubState = props => {
     const searchUsers = async text => {
         setLoading();
 
-        const {data} = await axios.get(
+        const { data } = await axios.get(
             `https://api.github.com/search/users?q=${text}&client_id=${
             githubCliendId}&client_secret=${githubClientSecret}`);
 
@@ -50,9 +52,9 @@ const GithubState = props => {
 
     // Get user
     const getUser = async username => {
-        
+
         setLoading();
-        const {data} = await axios.get(
+        const { data } = await axios.get(
             `https://api.github.com/users/${username}?client_id=${
             githubCliendId}&client_secret=${githubClientSecret}`);
 
@@ -65,17 +67,17 @@ const GithubState = props => {
 
     // Get repos
     const getUserRepos = async username => {
-    
+
         // use destructuring whenever possible 
-        const {data} = await axios.get(
-          `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${
-          githubCliendId}&client_secret=${githubClientSecret}`);
-    
+        const { data } = await axios.get(
+            `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${
+            githubCliendId}&client_secret=${githubClientSecret}`);
+
         dispatch({
             type: GET_REPOS,
             payload: data
         });
-      }
+    }
 
     // Clear users
     const clearUsers = () => dispatch({ type: CLEAR_USERS });
