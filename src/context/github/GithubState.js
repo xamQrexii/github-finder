@@ -38,13 +38,13 @@ const GithubState = props => {
     const searchUsers = async text => {
         setLoading();
 
-        const res = await axios.get(
+        const {data} = await axios.get(
             `https://api.github.com/search/users?q=${text}&client_id=${
             githubCliendId}&client_secret=${githubClientSecret}`);
 
         dispatch({
             type: SEARCH_USERS,
-            payload: res.data.items
+            payload: data.items
         });
     }
 
@@ -52,13 +52,13 @@ const GithubState = props => {
     const getUser = async username => {
         
         setLoading();
-        const res = await axios.get(
+        const {data} = await axios.get(
             `https://api.github.com/users/${username}?client_id=${
             githubCliendId}&client_secret=${githubClientSecret}`);
 
         await dispatch({
             type: GET_USER,
-            payload: res.data
+            payload: data
         });
 
     };
@@ -66,13 +66,14 @@ const GithubState = props => {
     // Get repos
     const getUserRepos = async username => {
     
-        const res = await axios.get(
+        // use destructuring whenever possible 
+        const {data} = await axios.get(
           `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${
           githubCliendId}&client_secret=${githubClientSecret}`);
     
         dispatch({
             type: GET_REPOS,
-            payload: res.data
+            payload: data
         });
       }
 
